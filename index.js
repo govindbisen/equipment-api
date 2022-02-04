@@ -6,7 +6,7 @@ import { equipmentsRouter } from "./routes/equipments.js";
 config();
 console.log(process.env.MONGO_URL);
 
-const PORT = 9000;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 
