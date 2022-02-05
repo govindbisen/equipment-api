@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 app.use(express.json());
+
 app.use(cors());
 
 async function createConnection() {
@@ -20,10 +21,11 @@ async function createConnection() {
   console.log("mongodb connected");
   return client;
 }
+
 export const client = await createConnection();
 
 app.get("/", (request, response) => {
-  response.send("Server is running!! i made it yippi");
+  response.send("Server is up and running!!");
 });
 
 app.use("/equipments", equipmentsRouter);

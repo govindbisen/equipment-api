@@ -1,4 +1,6 @@
 import express from "express";
+import { ObjectId } from "mongodb";
+
 import {
   getAllEquipments,
   getEquipmentById,
@@ -29,19 +31,19 @@ router
   });
 
 router
-  .route("/:e_id")
+  .route("/:_id")
   .get(async (request, response) => {
-    const { e_id } = request.params;
-    console.log(e_id);
-    const equipment = await getEquipmentById(e_id);
+    const { _id } = request.params;
+    console.log(_id);
+    const equipment = await getEquipmentById(ObjectId(_id));
     equipment
       ? response.send(equipment)
       : response.status(404).send({ msg: "no movie with this id" });
   })
   .delete(async (request, response) => {
-    const { e_id } = request.params;
-    console.log(e_id);
-    const result = await deleteEquipmentById(e_id);
+    const { _id } = request.params;
+    console.log(_id);
+    const result = await deleteEquipmentById(ObjectId(_id));
     result.deletedCount > 0
       ? response.send(result)
       : response.status(404).send({ message: "no match" });
