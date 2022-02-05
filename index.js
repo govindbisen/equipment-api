@@ -3,8 +3,9 @@ import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import cors from "cors";
 import bcrypt from "bcrypt";
-
 import { equipmentsRouter } from "./routes/equipments.js";
+import { usersRouter } from "./routes/users.js";
+
 config();
 console.log(process.env.MONGO_URL);
 
@@ -30,9 +31,10 @@ app.get("/", (request, response) => {
 });
 
 app.use("/equipments", equipmentsRouter);
+app.use("/users", usersRouter);
 
 async function genPassword(password) {
-  const NO_OF_ROUNDS = 100;
+  const NO_OF_ROUNDS = 12;
   const salt = await bcrypt.genSalt(NO_OF_ROUNDS);
   console.log(salt);
   const hashedPassword = await bcrypt.hash(password, salt);
