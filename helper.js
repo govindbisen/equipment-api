@@ -1,4 +1,15 @@
 import { client } from "./index.js";
+import bcrypt from "bcrypt";
+
+async function genPassword(password) {
+  const NO_OF_ROUNDS = 12;
+  const salt = await bcrypt.genSalt(NO_OF_ROUNDS);
+  console.log(salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  console.log(hashedPassword);
+  return hashedPassword;
+}
+// genPassword("Password@123");
 
 async function updateEquipmentById(_id, data) {
   return await client
@@ -29,4 +40,5 @@ export {
   getAllEquipments,
   deleteEquipmentById,
   getEquipmentById,
+  genPassword,
 };
