@@ -49,11 +49,11 @@ router
       : response.status(404).send({ message: "no match" });
   })
   .put(async (request, response) => {
-    const { e_id } = request.params;
-    console.log(e_id);
+    const { _id } = request.params;
+    console.log(_id);
     const data = request.body;
-    const result = await updateEquipmentById(e_id, data);
-    const updatedEquipment = await getEquipmentById(e_id);
+    const result = await updateEquipmentById(ObjectId(_id), data);
+    const updatedEquipment = await getEquipmentById(ObjectId(_id));
     response.send(updatedEquipment);
   });
 

@@ -1,10 +1,10 @@
 import { client } from "./index.js";
 
-async function updateEquipmentById(e_id, data) {
+async function updateEquipmentById(_id, data) {
   return await client
     .db("ERP")
     .collection("equipment")
-    .updateOne({ e_id: +e_id }, { $set: data });
+    .updateOne({ _id: _id }, { $set: data });
 }
 
 async function createEquipments(data) {
