@@ -2,6 +2,7 @@ import express, { response } from "express";
 import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import cors from "cors";
+import bcrypt from "bcrypt";
 
 import { equipmentsRouter } from "./routes/equipments.js";
 config();
@@ -29,5 +30,14 @@ app.get("/", (request, response) => {
 });
 
 app.use("/equipments", equipmentsRouter);
+
+async function genPassword(password) {
+  const NO_OF_ROUNDS = 100;
+  const salt = await bcrypt.genSalt(NO_OF_ROUNDS);
+  console.log(salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  console.log(hashedPassword);
+}
+genPassword("Password@123");
 
 app.listen(PORT, () => console.log("App is running"));
