@@ -1,6 +1,7 @@
 import express, { response } from "express";
 import { createUser, genPassword, getUserByName } from "../helper.js";
-import { client } from "../index.js";
+
+import bcrypt from "bcrypt";
 
 var router = express.Router();
 
@@ -8,6 +9,7 @@ router.post("/signup", async (request, response) => {
   const { username, password } = request.body;
 
   const userFromDB = await getUserByName(username);
+  console.log(userFromDB);
   if (userFromDB) {
     response.send({ msg: "user already exists" });
     return;
@@ -20,10 +22,10 @@ router.post("/signup", async (request, response) => {
 
   // regex
   // Minimum eight characters, at least one letter and one number:
-  var regularExpression = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  var regularExpression = /(?=.*?[A-Z])/;
   if (!regularExpression.test(password)) {
     response.send({
-      msg: "password should contain at least one letter and one number",
+      msg: "password should contain at least one upper case",
     });
     return;
   }
@@ -33,11 +35,25 @@ router.post("/signup", async (request, response) => {
   response.send(result);
 });
 
-router.post("/signin", async (request, response) => {
-  const data = request.body;
-  console.log(data);
-  const result = await client.db("ERP").collection("users").findOne(data);
-  response.send(result);
+router.post("/login", async (request, response) => {
+  const { username, password } = request.body;
+  const userFromDB = await getUserByName(username);
+
+  // Check for username
+  if (!userFromDB) {
+    response.status(400).send({ msg: "Invalid Credentials " });
+    return;
+  }
+
+  const storedPassword = userFromDB.password;
+  console.log(storedPassword);
+  const isPasswordMatch = await bcrypt.compare(password, storedPassword);
+  console.log(isPasswordMatch);
+  if (isPasswordMatch) {
+    response.send({ msg: "successfully login" });
+  } else {
+    response.send({ msg: " login failed invalid credentials " });
+  }
 });
 
 export const usersRouter = router;
