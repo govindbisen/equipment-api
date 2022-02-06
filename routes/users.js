@@ -1,16 +1,35 @@
-import express from "express";
-import { genPassword } from "../helper.js";
+import express, { response } from "express";
+import { createUser, genPassword, getUserByName } from "../helper.js";
 import { client } from "../index.js";
 
 var router = express.Router();
 
 router.post("/signup", async (request, response) => {
   const { username, password } = request.body;
+
+  const userFromDB = await getUserByName(username);
+  if (userFromDB) {
+    response.send({ msg: "user already exists" });
+    return;
+  }
+
+  if (password.length < 8) {
+    response.send({ msg: "password must be longer" });
+    return;
+  }
+
+  // regex
+  // Minimum eight characters, at least one letter and one number:
+  var regularExpression = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  if (!regularExpression.test(password)) {
+    response.send({
+      msg: "password should contain at least one letter and one number",
+    });
+    return;
+  }
+
   const hashedPassword = await genPassword(password);
-  const result = await client
-    .db("ERP")
-    .collection("users")
-    .insertOne({ username, password: hashedPassword });
+  const result = await createUser(username, hashedPassword);
   response.send(result);
 });
 

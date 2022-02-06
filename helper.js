@@ -34,6 +34,20 @@ async function getEquipmentById(_id) {
   return await client.db("ERP").collection("equipment").findOne({ _id: _id });
 }
 
+async function getUserByName(username) {
+  return await client
+    .db("ERP")
+    .collection("users")
+    .findOne({ username: username });
+}
+
+async function createUser(username, hashedPassword) {
+  return await client
+    .db("ERP")
+    .collection("users")
+    .insertOne({ username, password: hashedPassword });
+}
+
 export {
   updateEquipmentById,
   createEquipments,
@@ -41,4 +55,6 @@ export {
   deleteEquipmentById,
   getEquipmentById,
   genPassword,
+  getUserByName,
+  createUser,
 };
